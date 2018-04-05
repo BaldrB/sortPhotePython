@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # Vladislav Popko vpopko@gmail.com
 
-import Function
 import os
 import shutil
 import pickle
@@ -33,7 +32,6 @@ def sortfile(pathfilesout, pathfilesin):
         cou_files = len(faile)
         cou_f += 1
         cou = 0
-        g = ''
         
         for i in faile:
             gm = None
@@ -45,12 +43,11 @@ def sortfile(pathfilesout, pathfilesin):
                 # f = os.stat(os.path.join(pathfile, i)).st_ctime
             print(os.path.join(pathfile, i))  
             if(gm == None):
-                g = "0000.00"
+                gm = "0000.00"
             else:
                 gm = gm.decode("utf-8")
-                gm = gm[0:7]
                 gm = gm.replace(':', '.')
-                g = gm
+                gm = gm[0:7]
 
             cou += 1
             labelLoad.config(text="Папка: {} из {}".format(cou_f, cou_folder))
@@ -58,11 +55,11 @@ def sortfile(pathfilesout, pathfilesin):
             labelLoad1.config(text="Файл номер: {} из {}".format(cou, cou_files))
             labelg1.config(width=int((cou * 100 / cou_files)* 50 / 100))
             root.update()
-            if(os.path.exists(os.path.join(pathfilesin, g))):
-                shutil.copy(os.path.join(pathfile,i), os.path.join(pathfilesin,g))
+            if(os.path.exists(os.path.join(pathfilesin, gm))):
+                shutil.copy(os.path.join(pathfile,i), os.path.join(pathfilesin,gm))
             else:
-                os.mkdir(os.path.join(pathfilesin, g))
-                shutil.copy(os.path.join(pathfile,i), os.path.join(pathfilesin,g))
+                os.mkdir(os.path.join(pathfilesin, gm))
+                shutil.copy(os.path.join(pathfile,i), os.path.join(pathfilesin,gm))
     labelLoad.config(text="Готово!")
     labelLoad1.config(text="Готово!")
 
