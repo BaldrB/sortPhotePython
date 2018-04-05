@@ -36,7 +36,7 @@ def sortfile(pathfilesout, pathfilesin):
         for i in faile:
             gm = None
             exif_dict = piexif.load(os.path.join(pathfile, i))
-            for ifd in ("0th", "Exif", "GPS", "1st"):
+            for ifd in ("Exif", "GPS", "1st"):
                 for tag in exif_dict[ifd]:
                     if ((piexif.TAGS[ifd][tag]["name"] == "DateTime") or (piexif.TAGS[ifd][tag]["name"] == "DateTimeOriginal")):  
                         gm = exif_dict[ifd][tag]
