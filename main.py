@@ -10,8 +10,8 @@ from tkinter import *
 import datetime
 import time
 import piexif
-
-
+import exifread
+from PIL import Image
 
 def sortfile(pathfilesout, pathfilesin):
     """Поиск даты в exif"""
@@ -25,28 +25,29 @@ def sortfile(pathfilesout, pathfilesin):
 
     for path, dirs, files in os.walk(pathfilesout):
         pathall.append(path)
-        cou_folder = len(pathall)
+    cou_folder = len(pathall)
+
     for pathfile in pathall:
         faile = os.listdir(pathfile)
-        faile = list(filter(lambda x: x.endswith('.jpg') or x.endswith('.jpg'), faile))
+        faile = list(filter(lambda x: x.endswith('.jpg'), faile))
         cou_files = len(faile)
         cou_f += 1
         cou = 0
         
         for i in faile:
             gm = None
-            exif_dict = piexif.load(os.path.join(pathfile, i))
-            for ifd in ("Exif", "GPS", "1st"):
-                for tag in exif_dict[ifd]:
-                    if ((piexif.TAGS[ifd][tag]["name"] == "DateTime") or (piexif.TAGS[ifd][tag]["name"] == "DateTimeOriginal")):  
-                        gm = exif_dict[ifd][tag]
-                # f = os.stat(os.path.join(pathfile, i)).st_ctime
-            print(os.path.join(pathfile, i))  
+            
+            f = open(os.path.join(pathfile, i), 'rb')
+            tags = exifread.process_file(f, details=False)
+            if "EXIF DateTimeOriginal" in tags.keys():
+                gm = tags["EXIF DateTimeOriginal"]
+                gm = str(gm)
+
             if(gm == None):
                 gm = "0000.00"
             else:
-                gm = gm.decode("utf-8")
                 gm = gm.replace(':', '.')
+                gm = gm.replace('-', '.')
                 gm = gm[0:7]
 
             cou += 1
@@ -55,11 +56,13 @@ def sortfile(pathfilesout, pathfilesin):
             labelLoad1.config(text="Файл номер: {} из {}".format(cou, cou_files))
             labelg1.config(width=int((cou * 100 / cou_files)* 50 / 100))
             root.update()
+
             if(os.path.exists(os.path.join(pathfilesin, gm))):
                 shutil.copy(os.path.join(pathfile,i), os.path.join(pathfilesin,gm))
             else:
                 os.mkdir(os.path.join(pathfilesin, gm))
                 shutil.copy(os.path.join(pathfile,i), os.path.join(pathfilesin,gm))
+
     labelLoad.config(text="Готово!")
     labelLoad1.config(text="Готово!")
 
