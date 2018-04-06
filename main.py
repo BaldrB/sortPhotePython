@@ -9,7 +9,6 @@ from tkinter import filedialog
 from tkinter import *
 import datetime
 import time
-import piexif
 import exifread
 from PIL import Image
 
@@ -29,7 +28,7 @@ def sortfile(pathfilesout, pathfilesin):
 
     for pathfile in pathall:
         faile = os.listdir(pathfile)
-        faile = list(filter(lambda x: x.endswith('.jpg'), faile))
+        faile = list(filter(lambda x: x.endswith('.jpg') or x.endswith('.JPG'), faile))
         cou_files = len(faile)
         cou_f += 1
         cou = 0
