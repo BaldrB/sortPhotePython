@@ -4,13 +4,35 @@
 
 import os
 import shutil
-import pickle
 from tkinter import filedialog
 from tkinter import *
-import datetime
-import time
 import exifread
-from PIL import Image
+
+def searchpathfiles(pathfile):
+    """ Возворощает список путей папкок """
+
+    pathall = []
+    for path, dirs, files in os.walk(pathfile):
+        pathall.append(path)
+    return pathall
+    
+def filterjpglist(pathfile):
+    """ Returns a list of files with an extension .jpg and .JPG  """
+
+    faile = os.listdir(pathfile)
+    faile = list(filter(lambda x: x.endswith('.jpg') or x.endswith('.JPG'), faile))
+    return faile
+
+def searchExifData(pathf):
+    """ Return str data """
+
+    f = open(pathf, 'rb')
+    tags = exifread.process_file(f, details=False)
+    gm = None
+    if "EXIF DateTimeOriginal" in tags.keys():
+        gm = tags["EXIF DateTimeOriginal"]
+        gm = str(gm)
+    return gm
 
 def sortfile(pathfilesout, pathfilesin):
     """Поиск даты в exif"""
@@ -22,25 +44,17 @@ def sortfile(pathfilesout, pathfilesin):
     cou_f = 0
     pathall = []
 
-    for path, dirs, files in os.walk(pathfilesout):
-        pathall.append(path)
+    pathall = searchpathfiles(pathfilesout)
     cou_folder = len(pathall)
 
     for pathfile in pathall:
-        faile = os.listdir(pathfile)
-        faile = list(filter(lambda x: x.endswith('.jpg') or x.endswith('.JPG'), faile))
+        faile = filterjpglist(pathfile)
         cou_files = len(faile)
         cou_f += 1
         cou = 0
         
         for i in faile:
-            gm = None
-            
-            f = open(os.path.join(pathfile, i), 'rb')
-            tags = exifread.process_file(f, details=False)
-            if "EXIF DateTimeOriginal" in tags.keys():
-                gm = tags["EXIF DateTimeOriginal"]
-                gm = str(gm)
+            gm = searchExifData(os.path.join(pathfile, i))
 
             if(gm == None):
                 gm = "0000.00"
