@@ -4,8 +4,7 @@
 
 import os
 import shutil
-from tkinter import filedialog
-from tkinter import *
+from tkinter import filedialog, Button, Label, StringVar, Frame, Entry, Tk
 import exifread
 
 def searchpathfiles(pathfile):
@@ -18,7 +17,7 @@ def searchpathfiles(pathfile):
     
 def filterjpglist(pathfile):
     """ Returns a list of files with an extension .jpg and .JPG  """
-
+    
     faile = os.listdir(pathfile)
     faile = list(filter(lambda x: x.endswith('.jpg') or x.endswith('.JPG'), faile))
     return faile
@@ -48,6 +47,7 @@ def sortfile(pathfilesout, pathfilesin):
     cou_folder = len(pathall)
 
     for pathfile in pathall:
+
         faile = filterjpglist(pathfile)
         cou_files = len(faile)
         cou_f += 1
